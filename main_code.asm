@@ -66,7 +66,7 @@ waitecholowback
 	movlw 0x04 ; time for 17 cm
 	cpfslt tmh
 	retfie
-	movlw b'00000000' ; stop vehicule
+	movlw b'00000110' ; move right
 	movwf latc
 	retfie
 	
