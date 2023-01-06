@@ -174,8 +174,8 @@ init
 bcl
 	clrwdt ; clear watchdog timer
 	movlw d'50'
-	cpfslt numberofint ; counts 5 interruptions
-	call switchaction ; if 5 interruptions or more, change action taken by car
+	cpfslt numberofint ; counts 50 interruptions
+	call switchaction ; if 50 interruptions or more, change action taken by car
 	bra bcl
 	
 	org 0x200
