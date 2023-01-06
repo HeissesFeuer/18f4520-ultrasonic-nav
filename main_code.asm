@@ -10,10 +10,10 @@
 	config stvren = on ; resets if pc is overloaded
 	config debug = off ; rb5 and 6 normal io pins
 	
-loadtimer0  macro ; load timer0 with 15 536
-	movlw 0x3c
+loadtimer0  macro ; load timer0 with 60 536
+	movlw 0xec
 	movwf tmr0h
-	movlw 0xb0
+	movlw 0x78
 	movwf tmr0l
 	endm
 	
@@ -173,7 +173,7 @@ init
 	
 bcl
 	clrwdt ; clear watchdog timer
-	movlw d'5'
+	movlw d'50'
 	cpfslt numberofint ; counts 5 interruptions
 	call switchaction ; if 5 interruptions or more, change action taken by car
 	bra bcl
