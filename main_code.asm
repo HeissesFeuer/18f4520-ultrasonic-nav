@@ -32,6 +32,10 @@ loadtimer0  macro ; load timer0 with 60 536
 	
 	
 checkbacksensor
+
+	bcf t0con,7 ; stop timer0
+	loadtimer0 ; reload timer0
+	
 	bsf latb,7 ; set trigger to high
 	nop
 	nop
@@ -63,7 +67,7 @@ waitecholowback
 	bsf t0con,7 ; start timer0
     movf tmr1l,w
 	movff tmr1h,tmh
-	movlw 0x04 ; time for 17 cm
+	movlw 0x03 ; time for 13 cm
 	cpfslt tmh
 	retfie
 	movlw b'00000110' ; move right
@@ -114,10 +118,10 @@ waitecholow
 	bsf t0con,7  ; starts timer0
     movf tmr1l,w
 	movff tmr1h,tmh
-	movlw 0x07 ; time for 30 cm
+	movlw 0x04 ; time for 17 cm
 	cpfslt tmh
 	retfie
-	movlw 0x03 ; time for 13 cm
+	movlw 0x02 ; time for 8.5 cm
 	cpfsgt tmh
 	bra tooclose ; actions to take if obstacle too close
 	movlw b'00001001' ; move left

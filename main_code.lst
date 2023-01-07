@@ -1,4 +1,4 @@
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  1
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -41,232 +41,240 @@ Warning[207]: Found label after column 1. (TMH)
   00000004            00022         TMH EQU 0X04 ; save tmr1h value
                       00023         
 000000                00024         ORG 0X00
-000000 D050           00025         BRA INIT
+000000 D055           00025         BRA INIT
                       00026         
 000008                00027         ORG 0X08
-000008 D01E           00028         BRA HP
+000008 D023           00028         BRA HP
                       00029         
                       00030         
                       00031 
                       00032         
                       00033         
 00000A                00034 CHECKBACKSENSOR
-00000A 8E8A           00035         BSF LATB,7 ; set trigger to high
-00000C 0000           00036         NOP
-00000E 0000           00037         NOP
-000010 0000           00038         NOP
-000012 0000           00039         NOP
-000014 0000           00040         NOP
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  2
+                      00035 
+00000A 9ED5           00036         BCF T0CON,7 ; stop timer0
+                      00037         LOADTIMER0 ; reload timer0
+00000C 0EEC               M         MOVLW 0XEC
+00000E 6ED7               M         MOVWF TMR0H
+000010 0E78               M         MOVLW 0X78
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-000016 0000           00041         NOP
-000018 0000           00042         NOP
-00001A 0000           00043         NOP
-00001C 0000           00044         NOP
-00001E 0000           00045         NOP
-000020 9E8A           00046         BCF LATB,7 ; set trigger to low
-                      00047 
-000022 6ACF           00048         CLRF TMR1H
-000024 6ACE           00049         CLRF TMR1L
-                      00050 
-000026                00051 WAITECHOHIGHBACK
-000026 AC81           00052         BTFSS PORTB,6 ; check if echo is high
-000028 D7FE           00053         BRA WAITECHOHIGHBACK
-                      00054         
-                      00055 
-00002A 80CD           00056         BSF T1CON,0 ; start timer1
-                      00057         
-00002C                00058 WAITECHOLOWBACK
-00002C BC81           00059         BTFSC PORTB,6
-00002E D7FE           00060         BRA WAITECHOLOWBACK
+000012 6ED6               M         MOVWF TMR0L
+                      00038         
+000014 8E8A           00039         BSF LATB,7 ; set trigger to high
+000016 0000           00040         NOP
+000018 0000           00041         NOP
+00001A 0000           00042         NOP
+00001C 0000           00043         NOP
+00001E 0000           00044         NOP
+000020 0000           00045         NOP
+000022 0000           00046         NOP
+000024 0000           00047         NOP
+000026 0000           00048         NOP
+000028 0000           00049         NOP
+00002A 9E8A           00050         BCF LATB,7 ; set trigger to low
+                      00051 
+00002C 6ACF           00052         CLRF TMR1H
+00002E 6ACE           00053         CLRF TMR1L
+                      00054 
+000030                00055 WAITECHOHIGHBACK
+000030 AC81           00056         BTFSS PORTB,6 ; check if echo is high
+000032 D7FE           00057         BRA WAITECHOHIGHBACK
+                      00058         
+                      00059 
+000034 80CD           00060         BSF T1CON,0 ; start timer1
                       00061         
-000030 90CD           00062         BCF T1CON,0 ; stops timer1
-000032 8ED5           00063         BSF T0CON,7 ; start timer0
-000034 50CE           00064     MOVF TMR1L,W
-000036 CFCF F004      00065         MOVFF TMR1H,TMH
-00003A 0E04           00066         MOVLW 0X04 ; time for 17 cm
-00003C 6004           00067         CPFSLT TMH
-00003E 0010           00068         RETFIE
-000040 0E06           00069         MOVLW B'00000110' ; move right
-000042 6E8B           00070         MOVWF LATC
-000044 0010           00071         RETFIE
-                      00072         
-                      00073         
-                      00074         
-000046                00075 HP
-000046 9ED5           00076         BCF T0CON,7 ; stop timer0
-                      00077         LOADTIMER0 ; reload timer0 
-000048 0EEC               M         MOVLW 0XEC
-00004A 6ED7               M         MOVWF TMR0H
-00004C 0E78               M         MOVLW 0X78
-00004E 6ED6               M         MOVWF TMR0L
-000050 94F2           00078         BCF INTCON,TMR0IF ; lowers interrupt flag for timer0
-000052 2A00           00079         INCF NUMBEROFINT,F ; increment numberofint
-                      00080         
-000054 0E0A           00081         MOVLW B'00001010' ; reverse motors
-000056 608B           00082         CPFSLT LATC ; check if motors are in reverse
-000058 D7D8           00083         BRA CHECKBACKSENSOR
+000036                00062 WAITECHOLOWBACK
+000036 BC81           00063         BTFSC PORTB,6
+000038 D7FE           00064         BRA WAITECHOLOWBACK
+                      00065         
+00003A 90CD           00066         BCF T1CON,0 ; stops timer1
+00003C 8ED5           00067         BSF T0CON,7 ; start timer0
+00003E 50CE           00068     MOVF TMR1L,W
+000040 CFCF F004      00069         MOVFF TMR1H,TMH
+000044 0E03           00070         MOVLW 0X03 ; time for 13 cm
+000046 6004           00071         CPFSLT TMH
+000048 0010           00072         RETFIE
+00004A 0E06           00073         MOVLW B'00000110' ; move right
+00004C 6E8B           00074         MOVWF LATC
+00004E 0010           00075         RETFIE
+                      00076         
+                      00077         
+                      00078         
+000050                00079 HP
+000050 9ED5           00080         BCF T0CON,7 ; stop timer0
+                      00081         LOADTIMER0 ; reload timer0 
+000052 0EEC               M         MOVLW 0XEC
+000054 6ED7               M         MOVWF TMR0H
+000056 0E78               M         MOVLW 0X78
+000058 6ED6               M         MOVWF TMR0L
+00005A 94F2           00082         BCF INTCON,TMR0IF ; lowers interrupt flag for timer0
+00005C 2A00           00083         INCF NUMBEROFINT,F ; increment numberofint
                       00084         
-                      00085         
-00005A 808A           00086         BSF LATB,0 ; set trigger to high
-00005C 0000           00087         NOP
-00005E 0000           00088         NOP
-000060 0000           00089         NOP
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  3
+00005E 0E0A           00085         MOVLW B'00001010' ; reverse motors
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-000062 0000           00090         NOP
-000064 0000           00091         NOP
-000066 0000           00092         NOP
-000068 0000           00093         NOP
-00006A 0000           00094         NOP
-00006C 0000           00095         NOP
-00006E 0000           00096         NOP
-000070 908A           00097         BCF LATB,0 ; set trigger to low
-                      00098         
-000072 6ACF           00099         CLRF TMR1H
-000074 6ACE           00100         CLRF TMR1L
-                      00101         
-000076                00102 WAITECHOHIGH
-000076 A281           00103         BTFSS PORTB,1 ; check if echo is high
-000078 D7FE           00104         BRA WAITECHOHIGH
+000060 608B           00086         CPFSLT LATC ; check if motors are in reverse
+000062 D7D3           00087         BRA CHECKBACKSENSOR
+                      00088         
+                      00089         
+000064 808A           00090         BSF LATB,0 ; set trigger to high
+000066 0000           00091         NOP
+000068 0000           00092         NOP
+00006A 0000           00093         NOP
+00006C 0000           00094         NOP
+00006E 0000           00095         NOP
+000070 0000           00096         NOP
+000072 0000           00097         NOP
+000074 0000           00098         NOP
+000076 0000           00099         NOP
+000078 0000           00100         NOP
+00007A 908A           00101         BCF LATB,0 ; set trigger to low
+                      00102         
+00007C 6ACF           00103         CLRF TMR1H
+00007E 6ACE           00104         CLRF TMR1L
                       00105         
-                      00106         
-00007A 80CD           00107         BSF T1CON,0 ; start timer1
-                      00108         
-00007C                00109 WAITECHOLOW
-00007C B281           00110         BTFSC PORTB,1
-00007E D7FE           00111         BRA WAITECHOLOW
+000080                00106 WAITECHOHIGH
+000080 A281           00107         BTFSS PORTB,1 ; check if echo is high
+000082 D7FE           00108         BRA WAITECHOHIGH
+                      00109         
+                      00110         
+000084 80CD           00111         BSF T1CON,0 ; start timer1
                       00112         
-000080 90CD           00113         BCF T1CON,0 ; stops timer1
-000082 8ED5           00114         BSF T0CON,7  ; starts timer0
-000084 50CE           00115     MOVF TMR1L,W
-000086 CFCF F004      00116         MOVFF TMR1H,TMH
-00008A 0E07           00117         MOVLW 0X07 ; time for 30 cm
-00008C 6004           00118         CPFSLT TMH
-00008E 0010           00119         RETFIE
-000090 0E03           00120         MOVLW 0X03 ; time for 13 cm
-000092 6404           00121         CPFSGT TMH
-000094 D003           00122         BRA TOOCLOSE ; actions to take if obstacle too close
-000096 0E09           00123         MOVLW B'00001001' ; move left
-000098 6E8B           00124         MOVWF LATC
-00009A 0010           00125         RETFIE
-                      00126         
-00009C                00127 TOOCLOSE
-00009C 0E0A           00128         MOVLW B'00001010' ; reverse motors
-00009E 6E8B           00129         MOVWF LATC
-0000A0 D7B4           00130         BRA CHECKBACKSENSOR
-                      00131         
-                      00132         
-0000A2                00133 INIT
-0000A2 0E6A           00134         MOVLW B'01101010'
-0000A4 6ED3           00135         MOVWF OSCCON ; set internal clock to 4 MHz
-0000A6 0E00           00136         MOVLW 0X00
-0000A8 6E9B           00137         MOVWF OSCTUNE
-0000AA 80D1           00138         BSF WDTCON,SWDTEN ; enables software controlled watchdog timer
-                      00139         
-0000AC 6A00           00140         CLRF NUMBEROFINT ; clears number of interruptions
-0000AE 6A02           00141         CLRF VAR ; clears var that gives action to take
-                      00142         
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  4
+000086                00113 WAITECHOLOW
+000086 B281           00114         BTFSC PORTB,1
+000088 D7FE           00115         BRA WAITECHOLOW
+                      00116         
+00008A 90CD           00117         BCF T1CON,0 ; stops timer1
+00008C 8ED5           00118         BSF T0CON,7  ; starts timer0
+00008E 50CE           00119     MOVF TMR1L,W
+000090 CFCF F004      00120         MOVFF TMR1H,TMH
+000094 0E04           00121         MOVLW 0X04 ; time for 17 cm
+000096 6004           00122         CPFSLT TMH
+000098 0010           00123         RETFIE
+00009A 0E02           00124         MOVLW 0X02 ; time for 8.5 cm
+00009C 6404           00125         CPFSGT TMH
+00009E D003           00126         BRA TOOCLOSE ; actions to take if obstacle too close
+0000A0 0E09           00127         MOVLW B'00001001' ; move left
+0000A2 6E8B           00128         MOVWF LATC
+0000A4 0010           00129         RETFIE
+                      00130         
+0000A6                00131 TOOCLOSE
+0000A6 0E0A           00132         MOVLW B'00001010' ; reverse motors
+0000A8 6E8B           00133         MOVWF LATC
+0000AA D7AF           00134         BRA CHECKBACKSENSOR
+                      00135         
+                      00136         
+0000AC                00137 INIT
+0000AC 0E6A           00138         MOVLW B'01101010'
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0000B0 0E02           00143         MOVLW 0X02
-0000B2 6EFA           00144         MOVWF PCLATH                    ; pclath = 2
-                      00145         
-                      00146         ;configuring IO ports 
-0000B4 908A           00147         BCF LATB,0
-0000B6 9093           00148         BCF TRISB,0
-0000B8 6A8B           00149         CLRF LATC
-0000BA 0EF0           00150         MOVLW B'11110000'
-0000BC 6E94           00151         MOVWF TRISC
-                      00152         
-                      00153         ; back sensor config uses rb6 and 7
-0000BE 9E8A           00154         BCF LATB,7
-0000C0 9E93           00155         BCF TRISB,7
+0000AE 6ED3           00139         MOVWF OSCCON ; set internal clock to 4 MHz
+0000B0 0E00           00140         MOVLW 0X00
+0000B2 6E9B           00141         MOVWF OSCTUNE
+0000B4 80D1           00142         BSF WDTCON,SWDTEN ; enables software controlled watchdog timer
+                      00143         
+0000B6 6A00           00144         CLRF NUMBEROFINT ; clears number of interruptions
+0000B8 6A02           00145         CLRF VAR ; clears var that gives action to take
+                      00146         
+0000BA 0E02           00147         MOVLW 0X02
+0000BC 6EFA           00148         MOVWF PCLATH                    ; pclath = 2
+                      00149         
+                      00150         ;configuring IO ports 
+0000BE 908A           00151         BCF LATB,0
+0000C0 9093           00152         BCF TRISB,0
+0000C2 6A8B           00153         CLRF LATC
+0000C4 0EF0           00154         MOVLW B'11110000'
+0000C6 6E94           00155         MOVWF TRISC
                       00156         
-                      00157         
-                      00158         ; configuring timer0 to interrupt every 100ms
-                      00159         LOADTIMER0
-0000C2 0EEC               M         MOVLW 0XEC
-0000C4 6ED7               M         MOVWF TMR0H
-0000C6 0E78               M         MOVLW 0X78
-0000C8 6ED6               M         MOVWF TMR0L
-0000CA 0E80           00160         MOVLW B'10000000' ; using 16bits 
-0000CC 6ED5           00161         MOVWF T0CON
-                      00162         
-                      00163         ; configuring timer1 to be able to count the time taken by the signal to make a roundtrip
-0000CE 6ACF           00164         CLRF TMR1H
-0000D0 6ACE           00165         CLRF TMR1L
-0000D2 0E80           00166         MOVLW B'10000000'
-0000D4 6ECD           00167         MOVWF T1CON
-                      00168         
-0000D6 8ED0           00169         BSF RCON,IPEN
-0000D8 94F2           00170         BCF INTCON,TMR0IF
-0000DA 0EE0           00171         MOVLW B'11100000' ; high priority timer0
-0000DC 6EF2           00172         MOVWF INTCON
-                      00173         
-0000DE                00174 BCL
-0000DE 0004           00175         CLRWDT ; clear watchdog timer
-0000E0 0E32           00176         MOVLW D'50'
-0000E2 6000           00177         CPFSLT NUMBEROFINT ; counts 50 interruptions
-0000E4 EC10 F001      00178         CALL SWITCHACTION ; if 50 interruptions or more, change action taken by car
-0000E8 D7FA           00179         BRA BCL
-                      00180         
-000200                00181         ORG 0X200
-000200                00182 TABLE
-000200 26F9           00183         ADDWF PCL,F 
-000202 0C05           00184         RETLW B'00000101' ; to go straight
-000204 0C05           00185         RETLW B'00000101'
-000206 0C05           00186         RETLW B'00000101'
-000208 0C05           00187         RETLW B'00000101'
-00020A 0C01           00188         RETLW B'00000001'
-00020C 0C05           00189         RETLW B'00000101' ; to go straight
-00020E 0C05           00190         RETLW B'00000101'
-000210 0C05           00191         RETLW B'00000101'
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  5
+                      00157         ; back sensor config uses rb6 and 7
+0000C8 9E8A           00158         BCF LATB,7
+0000CA 9E93           00159         BCF TRISB,7
+                      00160         
+                      00161         
+                      00162         ; configuring timer0 to interrupt every 100ms
+                      00163         LOADTIMER0
+0000CC 0EEC               M         MOVLW 0XEC
+0000CE 6ED7               M         MOVWF TMR0H
+0000D0 0E78               M         MOVLW 0X78
+0000D2 6ED6               M         MOVWF TMR0L
+0000D4 0E80           00164         MOVLW B'10000000' ; using 16bits 
+0000D6 6ED5           00165         MOVWF T0CON
+                      00166         
+                      00167         ; configuring timer1 to be able to count the time taken by the signal to make a roundtrip
+0000D8 6ACF           00168         CLRF TMR1H
+0000DA 6ACE           00169         CLRF TMR1L
+0000DC 0E80           00170         MOVLW B'10000000'
+0000DE 6ECD           00171         MOVWF T1CON
+                      00172         
+0000E0 8ED0           00173         BSF RCON,IPEN
+0000E2 94F2           00174         BCF INTCON,TMR0IF
+0000E4 0EE0           00175         MOVLW B'11100000' ; high priority timer0
+0000E6 6EF2           00176         MOVWF INTCON
+                      00177         
+0000E8                00178 BCL
+0000E8 0004           00179         CLRWDT ; clear watchdog timer
+0000EA 0E32           00180         MOVLW D'50'
+0000EC 6000           00181         CPFSLT NUMBEROFINT ; counts 50 interruptions
+0000EE EC10 F001      00182         CALL SWITCHACTION ; if 50 interruptions or more, change action taken by car
+0000F2 D7FA           00183         BRA BCL
+                      00184         
+000200                00185         ORG 0X200
+000200                00186 TABLE
+000200 26F9           00187         ADDWF PCL,F 
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-000212 0C05           00192         RETLW B'00000101'
-000214 0C05           00193         RETLW B'00000101'
-000216 0C04           00194         RETLW B'00000100'
-000218 0C0A           00195         RETLW B'00001010' ; go back
-00021A 0C0A           00196         RETLW B'00001010'
-00021C 0C0A           00197         RETLW B'00001010'
-00021E 0C0A           00198         RETLW B'00001010'
-                      00199         
-                      00200         
-000220                00201 SWITCHACTION
-000220 6A00           00202         CLRF NUMBEROFINT ; resets number of interruptions
-000222 5002           00203         MOVF VAR,W ; increments pcl value in table
-000224 EC00 F001      00204         CALL TABLE ; gets value of action from table
-000228 6E8B           00205         MOVWF LATC ; sets new action in latc
-00022A 0E1C           00206         MOVLW D'28' ; checks if var reached the end of the table
-00022C 6002           00207         CPFSLT VAR ; (x-1) * 2
-00022E D003           00208         BRA CLEARVAR
-000230 0E02           00209         MOVLW 0X02 ; increment var by 2
-000232 2602           00210         ADDWF VAR,F
-000234 0012           00211         RETURN
-                      00212         
-000236                00213 CLEARVAR
-000236 6A02           00214         CLRF VAR ; if yes, clears var
-000238 0012           00215         RETURN
+000202 0C05           00188         RETLW B'00000101' ; to go straight
+000204 0C05           00189         RETLW B'00000101'
+000206 0C05           00190         RETLW B'00000101'
+000208 0C05           00191         RETLW B'00000101'
+00020A 0C01           00192         RETLW B'00000001'
+00020C 0C05           00193         RETLW B'00000101' ; to go straight
+00020E 0C05           00194         RETLW B'00000101'
+000210 0C05           00195         RETLW B'00000101'
+000212 0C05           00196         RETLW B'00000101'
+000214 0C05           00197         RETLW B'00000101'
+000216 0C04           00198         RETLW B'00000100'
+000218 0C0A           00199         RETLW B'00001010' ; go back
+00021A 0C0A           00200         RETLW B'00001010'
+00021C 0C0A           00201         RETLW B'00001010'
+00021E 0C0A           00202         RETLW B'00001010'
+                      00203         
+                      00204         
+000220                00205 SWITCHACTION
+000220 6A00           00206         CLRF NUMBEROFINT ; resets number of interruptions
+000222 5002           00207         MOVF VAR,W ; increments pcl value in table
+000224 EC00 F001      00208         CALL TABLE ; gets value of action from table
+000228 6E8B           00209         MOVWF LATC ; sets new action in latc
+00022A 0E1C           00210         MOVLW D'28' ; checks if var reached the end of the table
+00022C 6002           00211         CPFSLT VAR ; (x-1) * 2
+00022E D003           00212         BRA CLEARVAR
+000230 0E02           00213         MOVLW 0X02 ; increment var by 2
+000232 2602           00214         ADDWF VAR,F
+000234 0012           00215         RETURN
                       00216         
-                      00217         END
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  6
+000236                00217 CLEARVAR
+000236 6A02           00218         CLRF VAR ; if yes, clears var
+000238 0012           00219         RETURN
+                      00220         
+                      00221         END
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE  6
 
 
 SYMBOL TABLE
@@ -314,7 +322,7 @@ AN9                               00000003
 BANKED                            00000001
 BAUDCON                           00000FB8
 BAUDCTL                           00000FB8
-BCL                               000000DE
+BCL                               000000E8
 BCLIE                             00000003
 BCLIF                             00000003
 BCLIP                             00000003
@@ -325,7 +333,7 @@ BRG16                             00000003
 BRGH                              00000002
 BSR                               00000FE0
 C                                 00000000
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  7
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE  7
 
 
 SYMBOL TABLE
@@ -384,7 +392,7 @@ CMCON                             00000FB4
 CMIE                              00000006
 CMIF                              00000006
 CMIP                              00000006
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  8
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE  8
 
 
 SYMBOL TABLE
@@ -443,7 +451,7 @@ FSR2                              00000002
 FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  9
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE  9
 
 
 SYMBOL TABLE
@@ -463,14 +471,14 @@ HLVDL0                            00000000
 HLVDL1                            00000001
 HLVDL2                            00000002
 HLVDL3                            00000003
-HP                                00000046
+HP                                00000050
 IBF                               00000007
 IBOV                              00000005
 IDLEN                             00000007
 INDF0                             00000FEF
 INDF1                             00000FE7
 INDF2                             00000FDF
-INIT                              000000A2
+INIT                              000000AC
 INT0                              00000000
 INT0E                             00000004
 INT0F                             00000001
@@ -502,7 +510,7 @@ IPEN                              00000007
 IPR1                              00000F9F
 IPR2                              00000FA2
 IRCF0                             00000004
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 10
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 10
 
 
 SYMBOL TABLE
@@ -561,7 +569,7 @@ LVDCON                            00000FD2
 LVDEN                             00000004
 LVDIE                             00000002
 LVDIF                             00000002
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 11
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 11
 
 
 SYMBOL TABLE
@@ -620,7 +628,7 @@ PCFG0                             00000000
 PCFG1                             00000001
 PCFG2                             00000002
 PCFG3                             00000003
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 12
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 12
 
 
 SYMBOL TABLE
@@ -679,7 +687,7 @@ PSP4                              00000004
 PSP5                              00000005
 PSP6                              00000006
 PSP7                              00000007
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 13
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 13
 
 
 SYMBOL TABLE
@@ -738,7 +746,7 @@ RD1                               00000001
 RD16                              00000007
 RD2                               00000002
 RD3                               00000003
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 14
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 14
 
 
 SYMBOL TABLE
@@ -797,7 +805,7 @@ SSPM3                             00000003
 SSPOV                             00000006
 SSPSTAT                           00000FC7
 STATUS                            00000FD8
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 15
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 15
 
 
 SYMBOL TABLE
@@ -856,7 +864,7 @@ TMR0IE                            00000005
 TMR0IF                            00000002
 TMR0IP                            00000002
 TMR0L                             00000FD6
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 16
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 16
 
 
 SYMBOL TABLE
@@ -883,7 +891,7 @@ TMR3IP                            00000001
 TMR3L                             00000FB2
 TMR3ON                            00000000
 TO                                00000003
-TOOCLOSE                          0000009C
+TOOCLOSE                          000000A6
 TOS                               00000FFD
 TOSH                              00000FFE
 TOSL                              00000FFD
@@ -915,7 +923,7 @@ TRISC4                            00000004
 TRISC5                            00000005
 TRISC6                            00000006
 TRISC7                            00000007
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 17
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 17
 
 
 SYMBOL TABLE
@@ -959,10 +967,10 @@ VPP                               00000003
 VREFN                             00000002
 VREFP                             00000003
 W                                 00000000
-WAITECHOHIGH                      00000076
-WAITECHOHIGHBACK                  00000026
-WAITECHOLOW                       0000007C
-WAITECHOLOWBACK                   0000002C
+WAITECHOHIGH                      00000080
+WAITECHOHIGHBACK                  00000030
+WAITECHOLOW                       00000086
+WAITECHOLOWBACK                   00000036
 WCOL                              00000007
 WDTCON                            00000FD1
 WR                                00000001
@@ -974,7 +982,7 @@ Z                                 00000002
 _BOREN_NOSLP_2L                   000000FD
 _BOREN_OFF_2L                     000000F9
 _BOREN_ON_2L                      000000FB
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 18
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 18
 
 
 SYMBOL TABLE
@@ -1033,7 +1041,7 @@ _IDLOC3                           00200003
 _IDLOC4                           00200004
 _IDLOC5                           00200005
 _IDLOC6                           00200006
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 19
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 19
 
 
 SYMBOL TABLE
@@ -1092,7 +1100,7 @@ _WRT3_OFF_6L                      000000FF
 _WRT3_ON_6L                       000000F7
 _WRTB_OFF_6H                      000000FF
 _WRTB_ON_6H                       000000BF
-MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 20
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:33:12         PAGE 20
 
 
 SYMBOL TABLE
@@ -1113,14 +1121,14 @@ MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
 0000 : XX------XXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
 0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
 0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
-00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXX------ ----------------
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXX------------
 0200 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXX------
 0000 : -XXX-XX-XXXXXX-- ---------------- ---------------- ----------------
 
 All other memory blocks unused.
 
-Program Memory Bytes Used:   297
-Program Memory Bytes Free: 32471
+Program Memory Bytes Used:   307
+Program Memory Bytes Free: 32461
 
 
 Errors   :     0
