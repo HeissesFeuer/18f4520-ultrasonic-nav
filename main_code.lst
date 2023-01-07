@@ -1,4 +1,4 @@
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE  1
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ Warning[207]: Found label after column 1. (TMH)
 000010 0000           00038         NOP
 000012 0000           00039         NOP
 000014 0000           00040         NOP
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE  2
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -116,7 +116,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 00005C 0000           00087         NOP
 00005E 0000           00088         NOP
 000060 0000           00089         NOP
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE  3
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -175,7 +175,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0000AC 6A00           00140         CLRF NUMBEROFINT ; clears number of interruptions
 0000AE 6A02           00141         CLRF VAR ; clears var that gives action to take
                       00142         
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE  4
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -219,8 +219,8 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0000DE                00174 BCL
 0000DE 0004           00175         CLRWDT ; clear watchdog timer
 0000E0 0E32           00176         MOVLW D'50'
-0000E2 6000           00177         CPFSLT NUMBEROFINT ; counts 5 interruptions
-0000E4 EC0E F001      00178         CALL SWITCHACTION ; if 5 interruptions or more, change action taken by car
+0000E2 6000           00177         CPFSLT NUMBEROFINT ; counts 50 interruptions
+0000E4 EC10 F001      00178         CALL SWITCHACTION ; if 50 interruptions or more, change action taken by car
 0000E8 D7FA           00179         BRA BCL
                       00180         
 000200                00181         ORG 0X200
@@ -234,7 +234,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 00020C 0C05           00189         RETLW B'00000101' ; to go straight
 00020E 0C05           00190         RETLW B'00000101'
 000210 0C05           00191         RETLW B'00000101'
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE  5
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -243,28 +243,30 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 000212 0C05           00192         RETLW B'00000101'
 000214 0C05           00193         RETLW B'00000101'
 000216 0C04           00194         RETLW B'00000100'
-000218 0C0A           00195         RETLW B'00001010'
+000218 0C0A           00195         RETLW B'00001010' ; go back
 00021A 0C0A           00196         RETLW B'00001010'
-                      00197         
-                      00198         
-00021C                00199 SWITCHACTION
-00021C 6A00           00200         CLRF NUMBEROFINT ; resets number of interruptions
-00021E 5002           00201         MOVF VAR,W ; increments pcl value in table
-000220 EC00 F001      00202         CALL TABLE ; gets value of action from table
-000224 6E8B           00203         MOVWF LATC ; sets new action in latc
-000226 0E18           00204         MOVLW D'24' ; checks if var reached the end of the table
-000228 6002           00205         CPFSLT VAR ; (x-1) * 2
-00022A D003           00206         BRA CLEARVAR
-00022C 0E02           00207         MOVLW 0X02 ; increment var by 2
-00022E 2602           00208         ADDWF VAR,F
-000230 0012           00209         RETURN
-                      00210         
-000232                00211 CLEARVAR
-000232 6A02           00212         CLRF VAR ; if yes, clears var
-000234 0012           00213         RETURN
-                      00214         
-                      00215         END
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE  6
+00021C 0C0A           00197         RETLW B'00001010'
+00021E 0C0A           00198         RETLW B'00001010'
+                      00199         
+                      00200         
+000220                00201 SWITCHACTION
+000220 6A00           00202         CLRF NUMBEROFINT ; resets number of interruptions
+000222 5002           00203         MOVF VAR,W ; increments pcl value in table
+000224 EC00 F001      00204         CALL TABLE ; gets value of action from table
+000228 6E8B           00205         MOVWF LATC ; sets new action in latc
+00022A 0E1C           00206         MOVLW D'28' ; checks if var reached the end of the table
+00022C 6002           00207         CPFSLT VAR ; (x-1) * 2
+00022E D003           00208         BRA CLEARVAR
+000230 0E02           00209         MOVLW 0X02 ; increment var by 2
+000232 2602           00210         ADDWF VAR,F
+000234 0012           00211         RETURN
+                      00212         
+000236                00213 CLEARVAR
+000236 6A02           00214         CLRF VAR ; if yes, clears var
+000238 0012           00215         RETURN
+                      00216         
+                      00217         END
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  6
 
 
 SYMBOL TABLE
@@ -323,7 +325,7 @@ BRG16                             00000003
 BRGH                              00000002
 BSR                               00000FE0
 C                                 00000000
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE  7
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  7
 
 
 SYMBOL TABLE
@@ -372,7 +374,7 @@ CIS                               00000003
 CK                                00000006
 CKE                               00000006
 CKP                               00000004
-CLEARVAR                          00000232
+CLEARVAR                          00000236
 CLKI                              00000007
 CLKO                              00000006
 CM0                               00000000
@@ -382,7 +384,7 @@ CMCON                             00000FB4
 CMIE                              00000006
 CMIF                              00000006
 CMIP                              00000006
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE  8
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  8
 
 
 SYMBOL TABLE
@@ -441,7 +443,7 @@ FSR2                              00000002
 FSR2H                             00000FDA
 FSR2L                             00000FD9
 GCEN                              00000007
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE  9
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE  9
 
 
 SYMBOL TABLE
@@ -500,7 +502,7 @@ IPEN                              00000007
 IPR1                              00000F9F
 IPR2                              00000FA2
 IRCF0                             00000004
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 10
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 10
 
 
 SYMBOL TABLE
@@ -559,7 +561,7 @@ LVDCON                            00000FD2
 LVDEN                             00000004
 LVDIE                             00000002
 LVDIF                             00000002
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 11
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 11
 
 
 SYMBOL TABLE
@@ -618,7 +620,7 @@ PCFG0                             00000000
 PCFG1                             00000001
 PCFG2                             00000002
 PCFG3                             00000003
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 12
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 12
 
 
 SYMBOL TABLE
@@ -677,7 +679,7 @@ PSP4                              00000004
 PSP5                              00000005
 PSP6                              00000006
 PSP7                              00000007
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 13
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 13
 
 
 SYMBOL TABLE
@@ -736,7 +738,7 @@ RD1                               00000001
 RD16                              00000007
 RD2                               00000002
 RD3                               00000003
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 14
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 14
 
 
 SYMBOL TABLE
@@ -795,7 +797,7 @@ SSPM3                             00000003
 SSPOV                             00000006
 SSPSTAT                           00000FC7
 STATUS                            00000FD8
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 15
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 15
 
 
 SYMBOL TABLE
@@ -807,7 +809,7 @@ STKPTR                            00000FFC
 STKUNF                            00000006
 SWDTE                             00000000
 SWDTEN                            00000000
-SWITCHACTION                      0000021C
+SWITCHACTION                      00000220
 SYNC                              00000004
 T08BIT                            00000006
 T0CKI                             00000004
@@ -854,7 +856,7 @@ TMR0IE                            00000005
 TMR0IF                            00000002
 TMR0IP                            00000002
 TMR0L                             00000FD6
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 16
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 16
 
 
 SYMBOL TABLE
@@ -913,7 +915,7 @@ TRISC4                            00000004
 TRISC5                            00000005
 TRISC6                            00000006
 TRISC7                            00000007
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 17
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 17
 
 
 SYMBOL TABLE
@@ -972,7 +974,7 @@ Z                                 00000002
 _BOREN_NOSLP_2L                   000000FD
 _BOREN_OFF_2L                     000000F9
 _BOREN_ON_2L                      000000FB
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 18
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 18
 
 
 SYMBOL TABLE
@@ -1031,7 +1033,7 @@ _IDLOC3                           00200003
 _IDLOC4                           00200004
 _IDLOC5                           00200005
 _IDLOC6                           00200006
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 19
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 19
 
 
 SYMBOL TABLE
@@ -1090,7 +1092,7 @@ _WRT3_OFF_6L                      000000FF
 _WRT3_ON_6L                       000000F7
 _WRTB_OFF_6H                      000000FF
 _WRTB_ON_6H                       000000BF
-MPASM  5.34                     MAIN_CODE.ASM   1-6-2023  22:58:01         PAGE 20
+MPASM  5.34                     MAIN_CODE.ASM   1-7-2023  23:21:40         PAGE 20
 
 
 SYMBOL TABLE
@@ -1112,13 +1114,13 @@ MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
 0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
 0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
 00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXX------ ----------------
-0200 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXX----------
+0200 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXX------
 0000 : -XXX-XX-XXXXXX-- ---------------- ---------------- ----------------
 
 All other memory blocks unused.
 
-Program Memory Bytes Used:   293
-Program Memory Bytes Free: 32475
+Program Memory Bytes Used:   297
+Program Memory Bytes Free: 32471
 
 
 Errors   :     0

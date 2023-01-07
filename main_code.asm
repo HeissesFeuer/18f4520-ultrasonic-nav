@@ -192,6 +192,8 @@ table
 	retlw b'00000101'
 	retlw b'00000101'
 	retlw b'00000100'
+	retlw b'00001010' ; go back
+	retlw b'00001010'
 	retlw b'00001010'
 	retlw b'00001010'
 	
@@ -201,7 +203,7 @@ switchaction
 	movf var,w ; increments pcl value in table
 	call table ; gets value of action from table
 	movwf latc ; sets new action in latc
-	movlw d'24' ; checks if var reached the end of the table
+	movlw d'28' ; checks if var reached the end of the table
 	cpfslt var ; (x-1) * 2
 	bra clearvar
 	movlw 0x02 ; increment var by 2
