@@ -70,7 +70,7 @@ waitecholowback
 	movlw 0x03 ; time for 13 cm
 	cpfslt tmh
 	retfie
-	movlw b'00000110' ; move right
+	movlw b'00000000' ; stop
 	movwf latc
 	retfie
 	
